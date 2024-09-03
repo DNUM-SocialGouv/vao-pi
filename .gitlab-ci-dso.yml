@@ -9,18 +9,35 @@ cache:
     - node_modules
 
 variables:
-  TAG: "${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}"
+  TAG: ""
   REGISTRY_URL: "${IMAGE_REPOSITORY}"
 
 stages:
-  - read-secret
+  - init
   - build-images
   - deploy
 
-read_secret:
-  stage: read-secret
+init-read-secret:
+  stage: init
   extends:
     - .vault:read_secret
+
+init-variables:
+  stage: init
+  script:
+    - apt-get update && apt-get install --no-install-recommends --yes git
+    - |
+      if [ -n "$(git describe --exact-match --tags $(git log -n1 --pretty='%h'))" ]; then
+        TAG=$(git describe --tags $(git log -n1 --pretty='%h'))
+      else
+        TAG=$(git rev-parse --short HEAD)
+      fi
+    - echo "TAG=$TAG"
+    - echo "TAG=$TAG" >> var.env
+  artifacts: 
+    reports:
+      dotenv: var.env
+
 
 build-backend:
   variables:
