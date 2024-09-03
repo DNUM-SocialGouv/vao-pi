@@ -99,9 +99,9 @@ deploy:
     - echo "Deploying tag $TAG from branch $CI_COMMIT_REF_SLUG"
     - apt-get update && apt-get install --no-install-recommends --yes curl ca-certificates
     - |
-      if [[ "$CI_COMMIT_REF_SLUG" == "cloud-pi-demo" ]]; then
+      if [[ "$CI_COMMIT_REF_SLUG" == "main" ]]; then
         ENVIRONMENT=main
-      elif [[ "$CI_COMMIT_REF_SLUG" == "cloud-pi-demo-preprod" ]]; then
+      elif [[ "$CI_COMMIT_REF_SLUG" == "preprod" ]]; then
         ENVIRONMENT=preprod
       fi
 
